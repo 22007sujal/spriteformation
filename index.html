@@ -88,8 +88,8 @@
         </div>
     </div>
 
-    <div class="absolute bottom-8 left-0 right-0 flex justify-center z-20 bottom-bar pointer-events-none px-4 transition-all duration-500 ease-out focus-within:bottom-[45vh]">
-        <div class="bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl p-1.5 shadow-2xl shadow-slate-300/50 flex gap-2 pointer-events-auto w-full max-w-md transform transition-all focus-within:scale-[1.02]">
+    <div class="fixed bottom-8 left-0 right-0 flex justify-center z-20 bottom-bar pointer-events-none px-4">
+        <div class="bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl p-1.5 shadow-2xl shadow-slate-300/50 flex gap-2 pointer-events-auto w-full max-w-md">
             <input type="text" id="text-input" placeholder="ENTER TEXT" 
                 class="bg-transparent text-slate-800 px-3 py-3 text-center focus:outline-none uppercase tracking-widest font-bold placeholder:text-slate-300 w-full text-sm sm:text-base rounded-xl" 
                 maxlength="15" autocomplete="off">
@@ -191,9 +191,6 @@
 
             // Method to resize dynamically based on grid spacing
             resize(targetSize) {
-                // Determine aspect ratio preservation if needed, but for pixel sprites 
-                // typically we want them square or native ratio.
-                // Assuming square grid slots for now:
                 this.width = targetSize;
                 this.height = targetSize;
             }
@@ -206,7 +203,6 @@
                     this.direction = DIR_MAP.DOWN;
                     this.frame = 0;
                 } else if (this.state === 'IDLE') {
-                    // Random wander if idle (optional, currently not used much)
                     this.isMoving = false;
                 }
 
@@ -307,8 +303,6 @@
             
             // Centering
             const startX = (canvas.width - totalPxWidth) / 2 + spacing;
-            // Center vertical, offset up slightly to clear keyboard/input
-            // Adjusted logic to account for higher input bar
             const startY = (canvas.height - (5 * spacing)) / 2 - (isMobile ? 60 : 0);
 
             let points = [];
