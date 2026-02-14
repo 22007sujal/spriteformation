@@ -61,7 +61,7 @@
 
     <div class="absolute top-0 left-0 right-0 p-4 sm:p-6 flex justify-between items-start z-10 pointer-events-none">
         <div class="pointer-events-auto">
-             </div>
+        </div>
         
         <div class="pointer-events-auto flex flex-col items-end gap-2 pt-[env(safe-area-inset-top)]">
             <div id="status-text" class="text-[10px] sm:text-xs text-slate-400 font-medium font-mono bg-white/50 backdrop-blur px-2 py-1 rounded-md">
@@ -89,17 +89,18 @@
     </div>
 
     <div class="fixed bottom-8 left-0 right-0 flex justify-center z-20 bottom-bar pointer-events-none px-4">
-        <div class="bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl p-1.5 shadow-2xl shadow-slate-300/50 flex gap-2 pointer-events-auto w-full max-w-md">
+        <form onsubmit="event.preventDefault(); triggerFormation();" class="bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl p-1.5 shadow-2xl shadow-slate-300/50 flex gap-2 pointer-events-auto w-full max-w-md">
+            
             <input type="text" id="text-input" placeholder="ENTER TEXT" 
                 class="bg-transparent text-slate-800 px-3 py-3 text-center focus:outline-none uppercase tracking-widest font-bold placeholder:text-slate-300 w-full text-sm sm:text-base rounded-xl" 
                 maxlength="15" autocomplete="off">
             
-            <button onclick="triggerFormation()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl transition-transform active:scale-90 shadow-lg shrink-0 flex items-center justify-center">
+            <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl transition-transform active:scale-90 shadow-lg shrink-0 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
             </button>
-        </div>
+        </form>
     </div>
 
     <script>
@@ -324,6 +325,7 @@
 
         function triggerFormation() {
             const inputVal = textInput.value.toUpperCase();
+            
             // Blur input to hide keyboard on mobile after submission
             textInput.blur();
             
@@ -331,6 +333,7 @@
             
             if (inputVal) {
                 currentText = inputVal;
+                textInput.value = ''; // FIX: Automatically clear the text box!
             }
 
             if (uploadedSprites.length === 0) {
@@ -380,9 +383,7 @@
 
         // --- UI & Events ---
         
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') triggerFormation();
-        });
+        // (Removed the manual 'Enter' keydown listener since the <form> handles it natively now)
         
         // Handle resizing and orientation changes
         window.addEventListener('resize', () => {
