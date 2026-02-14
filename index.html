@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Sprite Playground</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -44,8 +44,11 @@
             from { transform: translateY(100%); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+        
         .bottom-bar {
             animation: slideUp 0.5s ease-out forwards;
+            /* Critical fix: Add padding for iPhone Home Bar */
+            padding-bottom: env(safe-area-inset-bottom, 20px);
         }
 
         /* Prevent zooming on inputs in iOS */
@@ -56,13 +59,11 @@
 </head>
 <body class="relative h-screen w-screen overflow-hidden bg-[#f8fafc]">
 
-    <!-- Top Bar -->
     <div class="absolute top-0 left-0 right-0 p-4 sm:p-6 flex justify-between items-start z-10 pointer-events-none">
         <div class="pointer-events-auto">
-             <!-- Spacer -->
-        </div>
+             </div>
         
-        <div class="pointer-events-auto flex flex-col items-end gap-2">
+        <div class="pointer-events-auto flex flex-col items-end gap-2 pt-[env(safe-area-inset-top)]">
             <div id="status-text" class="text-[10px] sm:text-xs text-slate-400 font-medium font-mono bg-white/50 backdrop-blur px-2 py-1 rounded-md">
                 Loading...
             </div>
@@ -78,10 +79,8 @@
         </div>
     </div>
 
-    <!-- Full Screen Canvas -->
     <canvas id="game-canvas" class="absolute inset-0 w-full h-full block"></canvas>
     
-    <!-- Empty State Overlay -->
     <div id="empty-state" class="absolute inset-0 flex items-center justify-center pointer-events-none z-0 transition-opacity duration-300">
         <div class="text-center text-slate-300 px-4">
             <p class="text-3xl sm:text-4xl font-black mb-2 tracking-tighter opacity-50">CANVAS</p>
@@ -89,9 +88,7 @@
         </div>
     </div>
 
-    <!-- Bottom Input Bar -->
-    <!-- Added pb-safe to respect iOS home indicator area if env() was supported, using simple padding for now -->
-    <div class="absolute bottom-6 sm:bottom-10 left-0 right-0 flex justify-center z-20 bottom-bar pointer-events-none px-4">
+    <div class="absolute bottom-8 left-0 right-0 flex justify-center z-20 bottom-bar pointer-events-none px-4 transition-all duration-500 ease-out focus-within:bottom-[45vh]">
         <div class="bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl p-1.5 shadow-2xl shadow-slate-300/50 flex gap-2 pointer-events-auto w-full max-w-md transform transition-all focus-within:scale-[1.02]">
             <input type="text" id="text-input" placeholder="ENTER TEXT" 
                 class="bg-transparent text-slate-800 px-3 py-3 text-center focus:outline-none uppercase tracking-widest font-bold placeholder:text-slate-300 w-full text-sm sm:text-base rounded-xl" 
@@ -311,7 +308,8 @@
             // Centering
             const startX = (canvas.width - totalPxWidth) / 2 + spacing;
             // Center vertical, offset up slightly to clear keyboard/input
-            const startY = (canvas.height - (5 * spacing)) / 2 - (isMobile ? 40 : 0);
+            // Adjusted logic to account for higher input bar
+            const startY = (canvas.height - (5 * spacing)) / 2 - (isMobile ? 60 : 0);
 
             let points = [];
             
@@ -332,6 +330,9 @@
 
         function triggerFormation() {
             const inputVal = textInput.value.toUpperCase();
+            // Blur input to hide keyboard on mobile after submission
+            textInput.blur();
+            
             if (!inputVal && !currentText) return;
             
             if (inputVal) {
@@ -377,8 +378,6 @@
                 ent.speed = 3 + Math.random() * 3; // Varied speed
                 
                 // Resize sprite to fit the grid density
-                // If density is high (low spacing), sprites need to be smaller
-                // A good rule of thumb is sprite size ~= spacing * 1.2
                 ent.resize(spacing * 1.5);
             });
             
