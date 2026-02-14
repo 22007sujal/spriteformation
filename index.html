@@ -326,14 +326,14 @@
         function triggerFormation() {
             const inputVal = textInput.value.toUpperCase();
             
-            // Blur input to hide keyboard on mobile after submission
-            textInput.blur();
+            // Removed textInput.blur() so the keyboard stays open on mobile!
             
             if (!inputVal && !currentText) return;
             
             if (inputVal) {
                 currentText = inputVal;
-                textInput.value = ''; // FIX: Automatically clear the text box!
+                textInput.value = ''; // Automatically clear the text box
+                textInput.focus(); // Keep the input focused so you can keep typing
             }
 
             if (uploadedSprites.length === 0) {
@@ -382,8 +382,6 @@
         }
 
         // --- UI & Events ---
-        
-        // (Removed the manual 'Enter' keydown listener since the <form> handles it natively now)
         
         // Handle resizing and orientation changes
         window.addEventListener('resize', () => {
